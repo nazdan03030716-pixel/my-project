@@ -1,0 +1,12 @@
+{% extends 'myapp/base.html' %}
+{% block content %}
+<h2>Последние публикации</h2>
+{% for post in posts %}
+<div class="card mb-2">
+  <div class="card-body">
+    <a href="{% url 'myapp:post_detail' post.pk %}">{{ post.title }}</a> - {{ post.content|truncatewords:10 }}
+  </div>
+</div>
+{% empty %}<p>Нет постов</p>{% endfor %}
+<a href="{% url 'myapp:post_list' %}" class="btn btn-primary mt-3">Все публикации</a>
+{% endblock %}
