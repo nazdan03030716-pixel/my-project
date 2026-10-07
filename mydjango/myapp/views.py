@@ -18,9 +18,7 @@ def post_list(request):
     return render(request, 'myapp/publications.html', {'page_obj': page_obj})
 
 def post_detail(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    
-    # Пагинация комментариев по 5 - по ТЗ
+    post = get_object_or_404(Post, pk=pk)    
     comment_list = post.comments.all().order_by('-created_at')
     paginator = Paginator(comment_list, 5)
     page_number = request.GET.get('page')
@@ -33,7 +31,7 @@ def post_detail(request, pk):
             comment.post = post
             comment.author = request.user
             comment.save()
-            return redirect('post_detail', pk=post.pk)
+            return redirect('myapp:post_detail', pk=post.pk)
     else:
         form = CommentForm()
 
@@ -51,7 +49,7 @@ def post_create(request):
             post = form.save(commit=False)
             post.author = request.user
             post.save()
-            return redirect('post_list')
+            return redirect('myapp:post_list')
     else:
         form = PostForm()
     return render(request, 'myapp/post_form.html', {'form': form, 'title': 'Создать публикацию'})
@@ -63,7 +61,7 @@ def post_edit(request, pk):
         form = PostForm(request.POST, instance=post)
         if form.is_valid():
             form.save()
-            return redirect('post_detail', pk=pk)
+            return redirect('myapp:post_detail', pk=pk)
     else:
         form = PostForm(instance=post)
     return render(request, 'myapp/post_form.html', {'form': form, 'title': 'Редактировать'})
@@ -74,7 +72,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('home')
+            return redirect('myapp:home')
     else:
         form = UserCreationForm()
     return render(request, 'myapp/register.html', {'form': form})
